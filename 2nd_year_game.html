@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>¡ESPAÑOL! · 2nd Year</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0c29;--card:#1a1650;
+  --red:#e74c3c;--yellow:#f1c40f;--green:#27ae60;--blue:#3498db;--pink:#e91e8c;--purple:#9b59b6;
+  --ink:#1a1a2e;--white:#ffffff;--muted:rgba(255,255,255,0.38);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color:var(--white);overscroll-behavior:none;}
+.screen{display:none;height:100%;flex-direction:column;}
+.screen.on{display:flex;}
+
+/* ── FLOATING EMOJIS ── */
+.floater{position:fixed;pointer-events:none;z-index:9999;font-size:1.8rem;animation:floatUp 0.9s ease forwards;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(0.5);}100%{opacity:0;transform:translateY(-90px) scale(1.4);}}
+
+/* ══ HOME ══ */
+#home{background:linear-gradient(160deg,#0f0c29 0%,#302b63 55%,#24243e 100%);overflow-y:auto;}
+.home-head{text-align:center;padding:26px 20px 10px;}
+.flag{font-size:3.2rem;display:inline-block;animation:swing 2.5s ease-in-out infinite;}
+@keyframes swing{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+.home-title{font-family:'Baloo 2',cursive;font-size:2.7rem;font-weight:900;letter-spacing:-1px;line-height:1;
+  background:linear-gradient(90deg,var(--yellow),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.home-sub{color:var(--muted);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
+.xp-wrap{margin:12px 18px 4px;}
+.xp-meta{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--muted);font-weight:800;margin-bottom:5px;}
+.xp-track{height:9px;background:rgba(255,255,255,0.1);border-radius:50px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green));transition:width 0.6s;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 28px;}
+.tile{background:rgba(255,255,255,0.07);border:2px solid rgba(255,255,255,0.09);border-radius:18px;
+  padding:14px 12px 12px;cursor:pointer;transition:transform 0.14s,border-color 0.2s;position:relative;overflow:hidden;min-height:120px;display:flex;flex-direction:column;}
+.tile:active{transform:scale(0.94);}
+.tile.best{border-color:rgba(241,196,15,0.55);}
+.tile.locked{opacity:0.28;cursor:default;}
+.tile-stripe{position:absolute;top:0;left:0;right:0;height:4px;border-radius:18px 18px 0 0;}
+.tile-icon{font-size:1.9rem;display:block;margin-bottom:5px;}
+.tile-name{font-weight:900;font-size:0.85rem;line-height:1.25;color:var(--white);flex:1;}
+.tile-month{font-size:0.58rem;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+.tile-stars{font-size:0.82rem;margin-top:5px;display:block;min-height:1.1em;}
+.tile-lock{position:absolute;top:9px;right:10px;font-size:0.85rem;opacity:0.45;}
+
+/* ══ LEVELS ══ */
+#levels{background:var(--bg);}
+.nav{display:flex;align-items:center;gap:10px;padding:13px 16px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+.nav-back{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:2px 8px 2px 0;line-height:1;}
+.nav-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.15rem;flex:1;}
+.lev-list{flex:1;overflow-y:auto;padding:14px 16px;}
+.lev-row{background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.08);border-radius:14px;
+  padding:13px 15px;margin-bottom:9px;cursor:pointer;display:flex;align-items:center;gap:13px;transition:border-color 0.2s;}
+.lev-row:active{background:rgba(255,255,255,0.1);}
+.lev-row.lev-best{border-color:rgba(241,196,15,0.45);}
+.lev-row.lev-locked{opacity:0.28;cursor:default;}
+.lev-num{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:900;color:var(--yellow);width:30px;flex-shrink:0;}
+.lev-info{flex:1;}
+.lev-name{font-weight:800;font-size:0.92rem;}
+.lev-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.lev-stars{font-size:1rem;}
+
+/* ══ GAME ══ */
+#game{background:#f5f3ff;}
+.ghdr{background:var(--ink);display:flex;align-items:center;gap:10px;padding:10px 14px;flex-shrink:0;}
+.ghdr-back{background:none;border:none;color:rgba(255,255,255,0.45);font-size:1.3rem;cursor:pointer;line-height:1;}
+.ghdr-name{font-family:'Baloo 2',cursive;font-weight:800;color:white;font-size:0.88rem;flex:1;}
+.ghdr-score{font-family:'Baloo 2',cursive;font-weight:900;color:var(--yellow);font-size:1.05rem;}
+.timer-wrap{height:6px;background:rgba(0,0,0,0.15);flex-shrink:0;}
+.timer-bar{height:100%;width:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));transition:width 0.15s linear;transform-origin:left;}
+.q-dots{display:flex;gap:4px;padding:10px 16px 0;flex-shrink:0;}
+.qdot{flex:1;height:5px;border-radius:3px;background:#ddd;}
+.qdot.ok{background:var(--green);}
+.qdot.no{background:var(--red);}
+.qdot.now{background:var(--blue);}
+.gbody{flex:1;overflow-y:auto;padding:16px 16px 24px;}
+.q-label{font-size:0.67rem;color:#aaa;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.q-main{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.42rem;color:var(--ink);line-height:1.3;margin-bottom:18px;}
+.opts{display:flex;flex-direction:column;gap:9px;}
+.opt{background:white;border:2.5px solid #e2ddf5;border-radius:14px;padding:13px 15px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:0.98rem;color:var(--ink);
+  cursor:pointer;display:flex;align-items:center;gap:11px;transition:all 0.12s;text-align:left;width:100%;}
+.opt:active{transform:scale(0.97);}
+.opt.correct{background:#eafaf1;border-color:var(--green);color:#1a6b3c;}
+.opt.wrong{background:#fdecea;border-color:var(--red);color:#922b21;}
+.opt.reveal{background:#eafaf1;border-color:var(--green);color:#1a6b3c;opacity:0.7;}
+.opt-ltr{width:28px;height:28px;border-radius:50%;background:#ede8f5;display:flex;align-items:center;
+  justify-content:center;font-size:0.72rem;font-weight:900;flex-shrink:0;color:#666;}
+.opt.correct .opt-ltr{background:var(--green);color:white;}
+.opt.wrong .opt-ltr{background:var(--red);color:white;}
+.opt.reveal .opt-ltr{background:var(--green);color:white;}
+.fb-bar{border-radius:14px;padding:12px 16px;font-weight:800;font-size:0.9rem;margin-top:12px;display:none;}
+.fb-bar.on{display:block;animation:pop 0.18s ease;}
+.fb-bar.fbgood{background:#eafaf1;color:#1a6b3c;border:2px solid #a9dfbf;}
+.fb-bar.fbbad{background:#fdecea;color:#922b21;border:2px solid #f1948a;}
+@keyframes pop{from{transform:scale(0.94);}to{transform:scale(1);}}
+.nxt-btn{background:var(--ink);color:white;border:none;border-radius:14px;padding:15px;
+  font-family:'Baloo 2',cursive;font-size:1.08rem;font-weight:800;cursor:pointer;
+  width:100%;margin-top:12px;display:none;}
+.nxt-btn.on{display:block;animation:pop 0.18s ease;}
+
+/* ══ RESULTS ══ */
+#results{background:linear-gradient(160deg,#0f0c29,#302b63);align-items:center;justify-content:center;overflow-y:auto;padding:28px 20px;}
+.res{max-width:400px;width:100%;text-align:center;}
+.res-em{font-size:5rem;display:block;margin-bottom:8px;animation:pop 0.4s ease;}
+.res-title{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:900;margin-bottom:4px;}
+.res-frac{font-family:'Baloo 2',cursive;font-size:3.6rem;font-weight:900;line-height:1;}
+.res-time{font-size:0.8rem;color:var(--muted);margin:4px 0 8px;}
+.res-stars{font-size:2.2rem;margin-bottom:4px;}
+.res-xp{font-size:0.88rem;color:var(--yellow);font-weight:800;margin-bottom:22px;}
+.missed-box{background:rgba(255,255,255,0.06);border-radius:14px;padding:14px 16px;margin-bottom:20px;text-align:left;max-height:210px;overflow-y:auto;}
+.missed-hdr{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:10px;}
+.missed-row{font-size:0.85rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.06);line-height:1.4;}
+.missed-row:last-child{border:none;}
+.missed-q{font-size:0.75rem;color:var(--muted);}
+.missed-a{color:var(--green);}
+.btn-again{width:100%;padding:16px;background:var(--yellow);color:var(--ink);border:none;
+  border-radius:14px;font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:900;cursor:pointer;margin-bottom:10px;}
+.btn-home{width:100%;padding:14px;background:rgba(255,255,255,0.07);color:white;
+  border:2px solid rgba(255,255,255,0.12);border-radius:14px;font-family:'Baloo 2',cursive;
+  font-size:1rem;font-weight:800;cursor:pointer;}
+
+@media(max-width:360px){
+  .home-title{font-size:2.2rem;}
+  .q-main{font-size:1.25rem;}
+  .opt{font-size:0.92rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen on">
+  <div class="home-head">
+    <span class="flag">🇪🇸</span>
+    <div class="home-title">¡ESPAÑOL!</div>
+    <div class="home-sub">2nd Year Spanish</div>
+  </div>
+  <div class="xp-wrap">
+    <div class="xp-meta"><span>⭐ Total Stars</span><span id="xp-label">0 / 0</span></div>
+    <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+  </div>
+  <div class="grid" id="tile-grid"></div>
+</div>
+
+<!-- LEVELS -->
+<div id="levels" class="screen">
+  <div class="nav">
+    <button class="nav-back" onclick="show('home')">←</button>
+    <div class="nav-title" id="lev-title"></div>
+    <span id="lev-icon" style="font-size:1.4rem"></span>
+  </div>
+  <div class="lev-list" id="lev-list"></div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen">
+  <div class="ghdr">
+    <button class="ghdr-back" onclick="quitGame()">←</button>
+    <div class="ghdr-name" id="ghdr-name"></div>
+    <div class="ghdr-score" id="ghdr-score">0 / 0</div>
+  </div>
+  <div class="timer-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+  <div class="q-dots" id="q-dots"></div>
+  <div class="gbody">
+    <div class="q-label" id="q-label"></div>
+    <div class="q-main" id="q-main"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb-bar" id="fb-bar"></div>
+    <button class="nxt-btn" id="nxt-btn" onclick="nextQ()">Siguiente →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results" class="screen">
+  <div class="res">
+    <span class="res-em" id="res-em"></span>
+    <div class="res-title" id="res-title"></div>
+    <div class="res-frac" id="res-frac"></div>
+    <div class="res-time" id="res-time"></div>
+    <div class="res-stars" id="res-stars"></div>
+    <div class="res-xp" id="res-xp"></div>
+    <div class="missed-box" id="missed-box" style="display:none">
+      <div class="missed-hdr">What you missed</div>
+      <div id="missed-list"></div>
+    </div>
+    <button class="btn-again" onclick="replayGame()">¡Otra vez! →</button>
+    <button class="btn-home" onclick="show('home');renderHome()">← All Topics</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// TOPIC + QUESTION BANK
+// 2nd Year Scheme:
+// Sep  (numbers revision, telling the time, present tense, daily routine, reflexive verbs)
+// Oct  (school day in Spain, school transport, verbs review, adjectives, introducing yourself)
+// Nov  (zodiac signs, pen pal, future tense, invitations, animals)
+// Dec  (buildings in town, directions, describing my town, city vs country)
+// Jan  (transport, train station, radical-changing verbs, Madrid metro, past preterite)
+// Feb  (hobbies, last weekend, clothes, colours, Spanish fashion)
+// Mar  (at the shops, at the market, food quantities, recipes, imperative)
+// Apr  (at the restaurant, Spanish food, making a menu, CBA prep)
+// May  (CBA preparation and presentation)
+// ============================================================
+const TOPICS = [
+
+// ══════════════════════════════════════════════════════
+// SEPTEMBER
+// ══════════════════════════════════════════════════════
+{id:'numbers_rev',name:'Numbers',icon:'🔢',color:'#9b59b6',month:'September',
+ levels:[
+  {name:'Numbers Revision',qs:[
+    {q:'How do you say 100?',a:'cien',o:['cien','ciento','sien','dien']},
+    {q:'How do you say 200?',a:'doscientos',o:['doscientos','docientos','doecientos','decientos']},
+    {q:'How do you say 500?',a:'quinientos',o:['quinientos','cinquecientos','cincocientos','quincientos']},
+    {q:'How do you say 1,000?',a:'mil',o:['mil','milo','mille','miles']},
+    {q:'"trescientos" means?',a:'300',o:['300','200','400','130']},
+    {q:'"cuatrocientos" means?',a:'400',o:['400','300','500','140']},
+    {q:'"seiscientos" means?',a:'600',o:['600','500','700','160']},
+    {q:'"setecientos" means?',a:'700',o:['700','600','800','170']},
+    {q:'"ochocientos" means?',a:'800',o:['800','700','900','180']},
+    {q:'"novecientos" means?',a:'900',o:['900','800','1000','190']},
+  ]},
+]},
+
+{id:'time',name:'Telling the Time',icon:'🕐',color:'#e74c3c',month:'September',
+ levels:[
+  {name:'O\'Clock & Half Past',qs:[
+    {q:'"¿Qué hora es?" means?',a:'What time is it?',o:['What time is it?','What day is it?','What time do you get up?','When is it?']},
+    {q:'How do you say "It is 3 o\'clock"?',a:'Son las tres',o:['Son las tres','Es las tres','Son tres','Son a las tres']},
+    {q:'How do you say "It is 1 o\'clock"?',a:'Es la una',o:['Es la una','Son las una','Es una','Son la una']},
+    {q:'"Son las cinco y media" means?',a:'It is half past five',o:['It is half past five','It is five o\'clock','It is quarter past five','It is quarter to five']},
+    {q:'"y cuarto" means?',a:'quarter past',o:['quarter past','quarter to','half past','o\'clock']},
+    {q:'"menos cuarto" means?',a:'quarter to',o:['quarter to','quarter past','half past','o\'clock']},
+    {q:'How do you say "It is quarter past two"?',a:'Son las dos y cuarto',o:['Son las dos y cuarto','Son las dos menos cuarto','Son las dos y media','Son las dos']},
+    {q:'"Son las ocho menos cuarto" means?',a:'It is quarter to eight',o:['It is quarter to eight','It is quarter past eight','It is half past eight','It is eight o\'clock']},
+    {q:'"de la mañana" means?',a:'in the morning / a.m.',o:['in the morning / a.m.','in the afternoon / p.m.','at night','at midday']},
+    {q:'"de la tarde" means?',a:'in the afternoon / p.m.',o:['in the afternoon / p.m.','in the morning / a.m.','at night','at midday']},
+  ]},
+]},
+
+{id:'daily_routine',name:'Daily Routine',icon:'🌅',color:'#e91e8c',month:'September',
+ levels:[
+  {name:'Reflexive Verbs',qs:[
+    {q:'"levantarse" means?',a:'to get up',o:['to get up','to go to bed','to wash oneself','to get dressed']},
+    {q:'"Me levanto" means?',a:'I get up',o:['I get up','I go to bed','I wash myself','I get dressed']},
+    {q:'"ducharse" means?',a:'to shower',o:['to shower','to wash','to get up','to go to bed']},
+    {q:'"Me ducho" means?',a:'I shower',o:['I shower','I wash myself','I get up','I go to bed']},
+    {q:'"vestirse" means?',a:'to get dressed',o:['to get dressed','to undress','to shower','to get up']},
+    {q:'"Me visto" means?',a:'I get dressed',o:['I get dressed','I shower','I get up','I go to bed']},
+    {q:'"acostarse" means?',a:'to go to bed',o:['to go to bed','to get up','to shower','to rest']},
+    {q:'"Me acuesto" means?',a:'I go to bed',o:['I go to bed','I get up','I shower','I rest']},
+    {q:'"desayunar" means?',a:'to have breakfast',o:['to have breakfast','to have lunch','to have dinner','to eat']},
+    {q:'"Me despierto" means?',a:'I wake up',o:['I wake up','I get up','I shower','I go to bed']},
+  ]},
+  {name:'My Day',qs:[
+    {q:'How do you say "I get up at 7"?',a:'Me levanto a las siete',o:['Me levanto a las siete','Levanto a las siete','Me levanta a las siete','Soy levanto a las siete']},
+    {q:'"Luego" means?',a:'Then / Next',o:['Then / Next','Before','After','First']},
+    {q:'"Primero" means?',a:'First',o:['First','Then','After','Later']},
+    {q:'"Después" means?',a:'After / Afterwards',o:['After / Afterwards','Before','First','Then']},
+    {q:'"Finalmente" means?',a:'Finally',o:['Finally','First','Then','Also']},
+    {q:'"comer" means?',a:'to eat / to have lunch',o:['to eat / to have lunch','to have breakfast','to have dinner','to drink']},
+    {q:'"cenar" means?',a:'to have dinner',o:['to have dinner','to have breakfast','to have lunch','to eat']},
+    {q:'"ir al colegio" means?',a:'to go to school',o:['to go to school','to go home','to go to bed','to go out']},
+    {q:'"volver a casa" means?',a:'to return home',o:['to return home','to go to school','to go out','to go to bed']},
+    {q:'How do you say "I brush my teeth"?',a:'Me lavo los dientes',o:['Me lavo los dientes','Lavo los dientes','Me lava los dientes','Me lavo el diente']},
+  ]},
+]},
+
+{id:'present_tense',name:'Present Tense',icon:'⚡',color:'#3498db',month:'September',
+ levels:[
+  {name:'-AR Verbs',qs:[
+    {q:'What is the "yo" form of HABLAR?',a:'hablo',o:['hablo','hablas','habla','hablamos']},
+    {q:'What is the "tú" form of HABLAR?',a:'hablas',o:['hablas','hablo','habla','habláis']},
+    {q:'What is the "él/ella" form of HABLAR?',a:'habla',o:['habla','hablo','hablas','hablan']},
+    {q:'What is the "nosotros" form of HABLAR?',a:'hablamos',o:['hablamos','habláis','hablan','hablo']},
+    {q:'What is the "ellos" form of HABLAR?',a:'hablan',o:['hablan','hablamos','habláis','habla']},
+    {q:'What is the "yo" form of TRABAJAR?',a:'trabajo',o:['trabajo','trabajas','trabaja','trabajamos']},
+    {q:'What is the "yo" form of ESCUCHAR?',a:'escucho',o:['escucho','escuchas','escucha','escuchamos']},
+    {q:'What is the "yo" form of MIRAR?',a:'miro',o:['miro','miras','mira','miramos']},
+    {q:'What is the "tú" form of BAILAR?',a:'bailas',o:['bailas','bailo','baila','bailamos']},
+    {q:'What is the "nosotros" form of CANTAR?',a:'cantamos',o:['cantamos','cantáis','cantan','canto']},
+  ]},
+  {name:'-ER & -IR Verbs',qs:[
+    {q:'What is the "yo" form of COMER?',a:'como',o:['como','comes','come','comemos']},
+    {q:'What is the "tú" form of COMER?',a:'comes',o:['comes','como','come','coméis']},
+    {q:'What is the "él/ella" form of COMER?',a:'come',o:['come','como','comes','comen']},
+    {q:'What is the "nosotros" form of BEBER?',a:'bebemos',o:['bebemos','bebéis','beben','bebo']},
+    {q:'What is the "yo" form of VIVIR?',a:'vivo',o:['vivo','vives','vive','vivimos']},
+    {q:'What is the "tú" form of VIVIR?',a:'vives',o:['vives','vivo','vive','vivís']},
+    {q:'What is the "nosotros" form of VIVIR?',a:'vivimos',o:['vivimos','vivís','viven','vivo']},
+    {q:'What is the "yo" form of ESCRIBIR?',a:'escribo',o:['escribo','escribes','escribe','escribimos']},
+    {q:'What is the "ellos" form of LEER?',a:'leen',o:['leen','leemos','leéis','leo']},
+    {q:'What is the "yo" form of APRENDER?',a:'aprendo',o:['aprendo','aprendes','aprende','aprendemos']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// OCTOBER
+// ══════════════════════════════════════════════════════
+{id:'school',name:'School',icon:'🏫',color:'#27ae60',month:'October',
+ levels:[
+  {name:'School in Spain',qs:[
+    {q:'"el colegio" means?',a:'the school',o:['the school','the college','the classroom','the teacher']},
+    {q:'"la asignatura" means?',a:'the subject',o:['the subject','the homework','the timetable','the exam']},
+    {q:'"el recreo" means?',a:'break / recess',o:['break / recess','the classroom','the timetable','the lesson']},
+    {q:'"las matemáticas" means?',a:'maths',o:['maths','science','history','geography']},
+    {q:'"la historia" means?',a:'history',o:['history','geography','science','maths']},
+    {q:'"la geografía" means?',a:'geography',o:['geography','history','science','art']},
+    {q:'"las ciencias" means?',a:'science',o:['science','maths','history','geography']},
+    {q:'"el inglés" means?',a:'English',o:['English','Irish','French','Spanish']},
+    {q:'"el dibujo" means?',a:'art / drawing',o:['art / drawing','music','drama','PE']},
+    {q:'"la educación física" means?',a:'PE / physical education',o:['PE / physical education','art','music','science']},
+  ]},
+  {name:'Introducing Yourself',qs:[
+    {q:'How do you say "My name is..."?',a:'Me llamo...',o:['Me llamo...','Mi nombre es...','Soy...','Tengo...']},
+    {q:'How do you say "I am 14 years old"?',a:'Tengo catorce años',o:['Tengo catorce años','Soy catorce años','Tengo catorce','Hay catorce años']},
+    {q:'How do you say "I live in Dublin"?',a:'Vivo en Dublín',o:['Vivo en Dublín','Estoy en Dublín','Soy de Dublín','Tengo Dublín']},
+    {q:'How do you say "I go to Synge Street"?',a:'Voy al colegio Synge Street',o:['Voy al colegio Synge Street','Estoy en Synge Street','Tengo Synge Street','Soy de Synge Street']},
+    {q:'How do you say "My favourite subject is..."?',a:'Mi asignatura favorita es...',o:['Mi asignatura favorita es...','Mi asignatura es...','Gusta asignatura...','Tengo asignatura...']},
+    {q:'How do you say "I like Spanish"?',a:'Me gusta el español',o:['Me gusta el español','Gusta español','Gusto español','Me gustan español']},
+    {q:'How do you say "I don\'t like maths"?',a:'No me gustan las matemáticas',o:['No me gustan las matemáticas','No gusto las matemáticas','No me gusta matemáticas','No gustan las matemáticas']},
+    {q:'"Me llevo bien con" means?',a:'I get on well with',o:['I get on well with','I like','I know','I live with']},
+    {q:'How do you say "I have a sister"?',a:'Tengo una hermana',o:['Tengo una hermana','Soy una hermana','Estoy una hermana','Hay una hermana']},
+    {q:'How do you say "I come to school by bus"?',a:'Vengo al colegio en autobús',o:['Vengo al colegio en autobús','Voy al colegio en autobús','Tengo autobús','Estoy en autobús']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// NOVEMBER
+// ══════════════════════════════════════════════════════
+{id:'zodiac',name:'Zodiac & Pen Pal',icon:'⭐',color:'#e67e22',month:'November',
+ levels:[
+  {name:'Zodiac Signs',qs:[
+    {q:'"Aries" — what dates?',a:'21 March – 19 April',o:['21 March – 19 April','21 April – 20 May','20 Jan – 18 Feb','22 Dec – 19 Jan']},
+    {q:'"Tauro" means?',a:'Taurus',o:['Taurus','Aries','Gemini','Scorpio']},
+    {q:'"Géminis" means?',a:'Gemini',o:['Gemini','Taurus','Cancer','Libra']},
+    {q:'"Cáncer" means?',a:'Cancer',o:['Cancer','Gemini','Leo','Pisces']},
+    {q:'"Leo" — when is it?',a:'23 July – 22 August',o:['23 July – 22 August','21 June – 22 July','23 Aug – 22 Sep','20 Oct – 21 Nov']},
+    {q:'"Virgo" means?',a:'Virgo',o:['Virgo','Libra','Scorpio','Sagittarius']},
+    {q:'"Libra" means?',a:'Libra',o:['Libra','Virgo','Scorpio','Capricorn']},
+    {q:'"Escorpio" means?',a:'Scorpio',o:['Scorpio','Libra','Sagittarius','Aries']},
+    {q:'"Sagitario" means?',a:'Sagittarius',o:['Sagittarius','Scorpio','Capricorn','Aquarius']},
+    {q:'"Piscis" means?',a:'Pisces',o:['Pisces','Aquarius','Capricorn','Aries']},
+  ]},
+  {name:'Looking for a Pen Pal',qs:[
+    {q:'"Busco un amigo por correspondencia" means?',a:'I am looking for a pen pal',o:['I am looking for a pen pal','I have a pen pal','I want a friend','I write to a friend']},
+    {q:'How do you say "I am writing to you because..."?',a:'Te escribo porque...',o:['Te escribo porque...','Escribo porque...','Me escribes porque...','Escribes porque...']},
+    {q:'"adjunto una foto" means?',a:'I enclose a photo',o:['I enclose a photo','I take a photo','I draw a photo','I send a photo']},
+    {q:'How do you say "I hope to hear from you soon"?',a:'Espero tu respuesta pronto',o:['Espero tu respuesta pronto','Espero tu carta pronto','Espero tu amigo pronto','Espero pronto']},
+    {q:'"Me llamo... y tengo... años" — what is this?',a:'My name is... and I am... years old',o:['My name is... and I am... years old','I live in... and I have... years','I am... and I have... brothers','My name is... and I live...']},
+    {q:'"Vivo en..." means?',a:'I live in...',o:['I live in...','I am from...','I go to...','I was born in...']},
+    {q:'"mis pasatiempos son..." means?',a:'my hobbies are...',o:['my hobbies are...','my subjects are...','my friends are...','my family are...']},
+    {q:'How do you say "Write back soon!"?',a:'¡Escríbeme pronto!',o:['¡Escríbeme pronto!','¡Escríbes pronto!','¡Escribe pronto!','¡Escríbeme tarde!']},
+    {q:'"Un abrazo" means — how do you end a letter?',a:'A hug / Yours sincerely',o:['A hug / Yours sincerely','With love','Best wishes','Goodbye']},
+    {q:'"Querido/Querida" means?',a:'Dear (to open a letter)',o:['Dear (to open a letter)','My friend','Hello','To whom it may concern']},
+  ]},
+]},
+
+{id:'future',name:'Future & Plans',icon:'🔭',color:'#9b59b6',month:'November',
+ levels:[
+  {name:'The Future Tense',qs:[
+    {q:'How is the future tense formed in Spanish?',a:'Infinitive + future endings',o:['Infinitive + future endings','Stem + present endings','AR/ER/IR + endings','Irregular stem only']},
+    {q:'What is the "yo" future ending?',a:'-é',o:['-é','-ás','-á','-emos']},
+    {q:'What is the "tú" future ending?',a:'-ás',o:['-ás','-é','-á','-éis']},
+    {q:'What is the "él/ella" future ending?',a:'-á',o:['-á','-é','-ás','-án']},
+    {q:'What is "hablaré"?',a:'I will speak',o:['I will speak','You will speak','He will speak','We will speak']},
+    {q:'What is "comerás"?',a:'You will eat',o:['You will eat','I will eat','He will eat','They will eat']},
+    {q:'What is "vivirá"?',a:'He/She will live',o:['He/She will live','I will live','You will live','We will live']},
+    {q:'What is "iremos"? (IR = to go)',a:'We will go',o:['We will go','You will go','They will go','I will go']},
+    {q:'How do you say "I will travel to Spain"?',a:'Viajaré a España',o:['Viajaré a España','Viajaré España','Viajaro a España','Viajaré en España']},
+    {q:'How do you say "We will go to the cinema"?',a:'Iremos al cine',o:['Iremos al cine','Vamos al cine','Irán al cine','Vamos ir al cine']},
+  ]},
+  {name:'Animals',qs:[
+    {q:'"el león" means?',a:'the lion',o:['the lion','the tiger','the elephant','the giraffe']},
+    {q:'"el tigre" means?',a:'the tiger',o:['the tiger','the lion','the leopard','the cheetah']},
+    {q:'"el elefante" means?',a:'the elephant',o:['the elephant','the giraffe','the hippo','the rhino']},
+    {q:'"la jirafa" means?',a:'the giraffe',o:['the giraffe','the elephant','the zebra','the lion']},
+    {q:'"el oso" means?',a:'the bear',o:['the bear','the wolf','the fox','the deer']},
+    {q:'"el lobo" means?',a:'the wolf',o:['the wolf','the bear','the fox','the deer']},
+    {q:'"el mono" means?',a:'the monkey',o:['the monkey','the parrot','the snake','the crocodile']},
+    {q:'"la serpiente" means?',a:'the snake',o:['the snake','the lizard','the monkey','the crocodile']},
+    {q:'"el delfín" means?',a:'the dolphin',o:['the dolphin','the whale','the shark','the seal']},
+    {q:'"el tiburón" means?',a:'the shark',o:['the shark','the dolphin','the whale','the octopus']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// DECEMBER
+// ══════════════════════════════════════════════════════
+{id:'town',name:'Town & Directions',icon:'🏙️',color:'#e74c3c',month:'December',
+ levels:[
+  {name:'Buildings in Town',qs:[
+    {q:'"la iglesia" means?',a:'the church',o:['the church','the bank','the library','the hospital']},
+    {q:'"el banco" means?',a:'the bank',o:['the bank','the church','the park','the library']},
+    {q:'"la biblioteca" means?',a:'the library',o:['the library','the bookshop','the school','the hospital']},
+    {q:'"el hospital" means?',a:'the hospital',o:['the hospital','the pharmacy','the library','the church']},
+    {q:'"la farmacia" means?',a:'the pharmacy',o:['the pharmacy','the hospital','the supermarket','the market']},
+    {q:'"el supermercado" means?',a:'the supermarket',o:['the supermarket','the market','the pharmacy','the shop']},
+    {q:'"el ayuntamiento" means?',a:'the town hall',o:['the town hall','the church','the museum','the library']},
+    {q:'"el museo" means?',a:'the museum',o:['the museum','the town hall','the gallery','the theatre']},
+    {q:'"el parque" means?',a:'the park',o:['the park','the garden','the square','the street']},
+    {q:'"la plaza" means?',a:'the square / plaza',o:['the square / plaza','the street','the park','the market']},
+  ]},
+  {name:'Directions',qs:[
+    {q:'"Todo recto" means?',a:'Straight ahead',o:['Straight ahead','Turn right','Turn left','Go back']},
+    {q:'"Gira a la derecha" means?',a:'Turn right',o:['Turn right','Turn left','Go straight','Go back']},
+    {q:'"Gira a la izquierda" means?',a:'Turn left',o:['Turn left','Turn right','Go straight','Go back']},
+    {q:'"¿Dónde está...?" means?',a:'Where is...?',o:['Where is...?','How far is...?','Is there...?','How do I get to...?']},
+    {q:'"a la vuelta de la esquina" means?',a:'around the corner',o:['around the corner','near the bank','far away','straight ahead']},
+    {q:'"cerca de" means?',a:'near / close to',o:['near / close to','far from','next to','opposite']},
+    {q:'"lejos de" means?',a:'far from',o:['far from','near','next to','opposite']},
+    {q:'"enfrente de" means?',a:'opposite / in front of',o:['opposite / in front of','next to','behind','near']},
+    {q:'"al final de la calle" means?',a:'at the end of the street',o:['at the end of the street','at the start of the street','in the middle of the street','on the corner']},
+    {q:'"Siga recto" means?',a:'Go / Continue straight ahead',o:['Go / Continue straight ahead','Turn right','Turn left','Stop here']},
+  ]},
+  {name:'City vs Country',qs:[
+    {q:'"la ciudad" means?',a:'the city',o:['the city','the town','the village','the countryside']},
+    {q:'"el pueblo" means?',a:'the village / town',o:['the village / town','the city','the countryside','the region']},
+    {q:'"el campo" means?',a:'the countryside',o:['the countryside','the city','the village','the garden']},
+    {q:'"ruidoso/ruidosa" means?',a:'noisy',o:['noisy','quiet','busy','calm']},
+    {q:'"tranquilo/tranquila" means?',a:'quiet / peaceful',o:['quiet / peaceful','noisy','busy','lively']},
+    {q:'"animado/animada" means?',a:'lively / bustling',o:['lively / bustling','quiet','boring','calm']},
+    {q:'"sucio/sucia" means?',a:'dirty',o:['dirty','clean','noisy','busy']},
+    {q:'"limpio/limpia" means?',a:'clean',o:['clean','dirty','noisy','quiet']},
+    {q:'How do you say "I prefer the city"?',a:'Prefiero la ciudad',o:['Prefiero la ciudad','Me gusta la ciudad','Quiero la ciudad','Elijo la ciudad']},
+    {q:'How do you say "There is a lot of traffic"?',a:'Hay mucho tráfico',o:['Hay mucho tráfico','Es mucho tráfico','Tengo mucho tráfico','Hay mucho transporte']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// JANUARY
+// ══════════════════════════════════════════════════════
+{id:'transport',name:'Transport & Travel',icon:'🚂',color:'#3498db',month:'January',
+ levels:[
+  {name:'Transport',qs:[
+    {q:'"el autobús" means?',a:'the bus',o:['the bus','the car','the train','the bicycle']},
+    {q:'"el tren" means?',a:'the train',o:['the train','the bus','the metro','the plane']},
+    {q:'"el metro" means?',a:'the metro / underground',o:['the metro / underground','the train','the bus','the tram']},
+    {q:'"el avión" means?',a:'the plane',o:['the plane','the train','the helicopter','the rocket']},
+    {q:'"el coche" means?',a:'the car',o:['the car','the bus','the bike','the lorry']},
+    {q:'"la bicicleta" means?',a:'the bicycle',o:['the bicycle','the motorbike','the car','the scooter']},
+    {q:'"a pie" means?',a:'on foot',o:['on foot','by car','by bus','by bike']},
+    {q:'"en coche" means?',a:'by car',o:['by car','by bus','by train','on foot']},
+    {q:'"el barco" means?',a:'the boat / ship',o:['the boat / ship','the plane','the ferry','the submarine']},
+    {q:'How do you say "I travel by train"?',a:'Viajo en tren',o:['Viajo en tren','Voy en tren','Uso el tren','Estoy en tren']},
+  ]},
+  {name:'At the Train Station',qs:[
+    {q:'"la estación de tren" means?',a:'the train station',o:['the train station','the bus station','the airport','the port']},
+    {q:'"el andén" means?',a:'the platform',o:['the platform','the waiting room','the ticket office','the exit']},
+    {q:'"la sala de espera" means?',a:'the waiting room',o:['the waiting room','the platform','the ticket office','the entrance']},
+    {q:'"la taquilla" means?',a:'the ticket office',o:['the ticket office','the platform','the exit','the waiting room']},
+    {q:'"un billete de ida y vuelta" means?',a:'a return ticket',o:['a return ticket','a single ticket','a season ticket','a first-class ticket']},
+    {q:'"un billete de ida" means?',a:'a single ticket',o:['a single ticket','a return ticket','a season ticket','a child ticket']},
+    {q:'"¿A qué hora sale el tren?" means?',a:'What time does the train leave?',o:['What time does the train leave?','What time does the train arrive?','Where does the train go?','How much is the ticket?']},
+    {q:'"¿De qué andén sale?" means?',a:'Which platform does it leave from?',o:['Which platform does it leave from?','What time does it leave?','Where does it go?','How long does it take?']},
+    {q:'"el retraso" means?',a:'the delay',o:['the delay','the platform','the departure','the arrival']},
+    {q:'"la llegada" means?',a:'the arrival',o:['the arrival','the departure','the delay','the journey']},
+  ]},
+]},
+
+{id:'preterite',name:'Past Tense',icon:'📅',color:'#e91e8c',month:'January',
+ levels:[
+  {name:'Preterite: Regular Verbs',qs:[
+    {q:'What is "yo" form of HABLAR in the preterite?',a:'hablé',o:['hablé','hablaste','habló','hablamos']},
+    {q:'What is "tú" form of HABLAR in the preterite?',a:'hablaste',o:['hablaste','hablé','habló','hablaron']},
+    {q:'What is "él/ella" form of HABLAR in the preterite?',a:'habló',o:['habló','hablé','hablaste','hablaron']},
+    {q:'What is "yo" form of COMER in the preterite?',a:'comí',o:['comí','comiste','comió','comimos']},
+    {q:'What is "tú" form of COMER in the preterite?',a:'comiste',o:['comiste','comí','comió','comieron']},
+    {q:'What is "yo" form of VIVIR in the preterite?',a:'viví',o:['viví','viviste','vivió','vivimos']},
+    {q:'"hablé" means?',a:'I spoke',o:['I spoke','I was speaking','I speak','I used to speak']},
+    {q:'"comió" means?',a:'He/She ate',o:['He/She ate','I ate','You ate','They ate']},
+    {q:'"vivimos" in the preterite means?',a:'We lived',o:['We lived','We live','We used to live','We were living']},
+    {q:'What tense is "ayer comí una pizza"?',a:'Preterite (past)',o:['Preterite (past)','Present','Future','Imperfect']},
+  ]},
+  {name:'Radical-Changing Verbs',qs:[
+    {q:'PODER (o→ue): what is "yo" form?',a:'puedo',o:['puedo','podemos','podéis','pueden']},
+    {q:'QUERER (e→ie): what is "yo" form?',a:'quiero',o:['quiero','queremos','queréis','quieren']},
+    {q:'JUGAR (u→ue): what is "yo" form?',a:'juego',o:['juego','jugamos','jugáis','juegan']},
+    {q:'VOLVER (o→ue): what is "yo" form?',a:'vuelvo',o:['vuelvo','volvemos','volvéis','vuelven']},
+    {q:'PREFERIR (e→ie): what is "yo" form?',a:'prefiero',o:['prefiero','preferimos','preferís','prefieren']},
+    {q:'DORMIR (o→ue): what is "yo" form?',a:'duermo',o:['duermo','dormimos','dormís','duermen']},
+    {q:'PEDIR (e→i): what is "yo" form?',a:'pido',o:['pido','pedimos','pedís','piden']},
+    {q:'"puedo" means?',a:'I can',o:['I can','I want','I prefer','I sleep']},
+    {q:'"quiero" means?',a:'I want',o:['I want','I can','I prefer','I play']},
+    {q:'Why do radical-changing verbs change?',a:'The stressed vowel in the stem changes',o:['The stressed vowel in the stem changes','The ending changes','The whole verb changes','Only in the nosotros form']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// FEBRUARY
+// ══════════════════════════════════════════════════════
+{id:'hobbies2',name:'Hobbies & Weekend',icon:'⚽',color:'#27ae60',month:'February',
+ levels:[
+  {name:'What I did last weekend',qs:[
+    {q:'How do you say "Last weekend I..."?',a:'El fin de semana pasado...',o:['El fin de semana pasado...','El fin de semana...','Ayer...','La semana pasada...']},
+    {q:'"fui al cine" means?',a:'I went to the cinema',o:['I went to the cinema','I go to the cinema','I will go to the cinema','I like the cinema']},
+    {q:'"jugué al fútbol" means?',a:'I played football',o:['I played football','I play football','I will play football','I like football']},
+    {q:'"salí con mis amigos" means?',a:'I went out with my friends',o:['I went out with my friends','I go out with my friends','I will go out with my friends','I stayed with my friends']},
+    {q:'"vi la tele" means?',a:'I watched TV',o:['I watched TV','I watch TV','I will watch TV','I like TV']},
+    {q:'"fui de compras" means?',a:'I went shopping',o:['I went shopping','I go shopping','I will go shopping','I like shopping']},
+    {q:'"lo pasé muy bien" means?',a:'I had a great time',o:['I had a great time','I had a bad time','I had an OK time','I was bored']},
+    {q:'"fue genial" means?',a:'It was great',o:['It was great','It was boring','It was bad','It was OK']},
+    {q:'"ayer" means?',a:'yesterday',o:['yesterday','today','tomorrow','last week']},
+    {q:'"la semana pasada" means?',a:'last week',o:['last week','next week','this week','last month']},
+  ]},
+  {name:'Clothes & Colours',qs:[
+    {q:'"la camisa" means?',a:'the shirt',o:['the shirt','the t-shirt','the jumper','the jacket']},
+    {q:'"la chaqueta" means?',a:'the jacket',o:['the jacket','the coat','the jumper','the shirt']},
+    {q:'"los calcetines" means?',a:'the socks',o:['the socks','the shoes','the trainers','the boots']},
+    {q:'"las botas" means?',a:'the boots',o:['the boots','the shoes','the trainers','the socks']},
+    {q:'"el cinturón" means?',a:'the belt',o:['the belt','the scarf','the hat','the gloves']},
+    {q:'"el gorro / el sombrero" means?',a:'the hat / cap',o:['the hat / cap','the scarf','the gloves','the belt']},
+    {q:'"la bufanda" means?',a:'the scarf',o:['the scarf','the gloves','the hat','the coat']},
+    {q:'"gris" means?',a:'grey',o:['grey','beige','cream','silver']},
+    {q:'"de rayas" means?',a:'striped',o:['striped','spotted','checked','plain']},
+    {q:'"de lunares" means?',a:'spotted / polka dot',o:['spotted / polka dot','striped','checked','plain']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// MARCH
+// ══════════════════════════════════════════════════════
+{id:'shopping2',name:'Shopping & Food',icon:'🛒',color:'#e67e22',month:'March',
+ levels:[
+  {name:'At the Shops & Market',qs:[
+    {q:'"¿Me puede atender?" means?',a:'Can you serve me / help me?',o:['Can you serve me / help me?','How much does it cost?','Do you have...?','I would like...']},
+    {q:'"¿Tiene...?" means?',a:'Do you have...?',o:['Do you have...?','I would like...','How much is...?','Can I help you?']},
+    {q:'"Me pone..." means?',a:'Can you give me... / I\'ll have...',o:["Can you give me... / I'll have...",'I want...','I would like...','Do you have...?']},
+    {q:'"¿Algo más?" means?',a:'Anything else?',o:['Anything else?','How much?','Is that all?','Do you want...?']},
+    {q:'"Nada más, gracias" means?',a:'Nothing else, thank you',o:['Nothing else, thank you','Yes please, something else','That\'s too much','Yes, a bit more']},
+    {q:'"el mercado" means?',a:'the market',o:['the market','the supermarket','the shop','the stall']},
+    {q:'"el puesto" means?',a:'the stall / stand',o:['the stall / stand','the market','the shop','the counter']},
+    {q:'"fresco/fresca" means?',a:'fresh',o:['fresh','frozen','tinned','dried']},
+    {q:'"el kilo" means?',a:'the kilogram',o:['the kilogram','the litre','the gram','the pound']},
+    {q:'"la lata" means?',a:'the tin / can',o:['the tin / can','the bottle','the packet','the bag']},
+  ]},
+  {name:'Food Quantities & Recipes',qs:[
+    {q:'"un litro de leche" means?',a:'a litre of milk',o:['a litre of milk','a bottle of milk','a carton of milk','a glass of milk']},
+    {q:'"un kilo de patatas" means?',a:'a kilo of potatoes',o:['a kilo of potatoes','a bag of potatoes','a tin of potatoes','a box of potatoes']},
+    {q:'"una botella de agua" means?',a:'a bottle of water',o:['a bottle of water','a glass of water','a litre of water','a cup of water']},
+    {q:'"un paquete de pasta" means?',a:'a packet of pasta',o:['a packet of pasta','a bag of pasta','a box of pasta','a tin of pasta']},
+    {q:'"una docena de huevos" means?',a:'a dozen eggs',o:['a dozen eggs','a box of eggs','a carton of eggs','six eggs']},
+    {q:'The imperative "añade" means?',a:'add (you-command)',o:['add (you-command)','mix','cut','heat']},
+    {q:'The imperative "mezcla" means?',a:'mix (you-command)',o:['mix (you-command)','add','cut','cook']},
+    {q:'The imperative "corta" means?',a:'cut (you-command)',o:['cut (you-command)','cook','mix','add']},
+    {q:'The imperative "calienta" means?',a:'heat (you-command)',o:['heat (you-command)','cool','cook','mix']},
+    {q:'"Primero... luego... finalmente..." is used to?',a:'Sequence steps in a recipe',o:['Sequence steps in a recipe','Describe ingredients','List quantities','Name utensils']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// APRIL
+// ══════════════════════════════════════════════════════
+{id:'restaurant',name:'At the Restaurant',icon:'🍽️',color:'#e74c3c',month:'April',
+ levels:[
+  {name:'Ordering Food',qs:[
+    {q:'"¿Qué va a tomar?" means?',a:'What will you have?',o:['What will you have?','What do you want?','Can I help you?','Are you ready?']},
+    {q:'"De primero quiero..." means?',a:'For starters I want...',o:['For starters I want...','For the main course I want...','For dessert I want...','To drink I want...']},
+    {q:'"De segundo quiero..." means?',a:'For the main course I want...',o:['For the main course I want...','For starters I want...','For dessert I want...','As a side I want...']},
+    {q:'"De postre quiero..." means?',a:'For dessert I want...',o:['For dessert I want...','For starters I want...','For the main course I want...','To drink I want...']},
+    {q:'"Para beber quiero..." means?',a:'To drink I want...',o:['To drink I want...','To eat I want...','For dessert I want...','For starters I want...']},
+    {q:'"La cuenta, por favor" means?',a:'The bill, please',o:['The bill, please','The menu, please','The waiter, please','The table, please']},
+    {q:'"La carta / El menú" means?',a:'The menu',o:['The menu','The bill','The table','The waiter']},
+    {q:'"el camarero / la camarera" means?',a:'the waiter / waitress',o:['the waiter / waitress','the chef','the customer','the manager']},
+    {q:'"Está delicioso" means?',a:'It is delicious',o:['It is delicious','It is disgusting','It is cold','It is hot']},
+    {q:'"¡Buen provecho!" means?',a:'Enjoy your meal!',o:['Enjoy your meal!','Thank you!','Cheers!','To your health!']},
+  ]},
+  {name:'Spanish Food',qs:[
+    {q:'"la paella" is a dish from?',a:'Valencia',o:['Valencia','Madrid','Barcelona','Seville']},
+    {q:'"la tortilla española" is made with?',a:'Eggs and potato',o:['Eggs and potato','Egg and cheese','Potato and ham','Cheese and ham']},
+    {q:'"el gazpacho" is?',a:'A cold tomato soup',o:['A cold tomato soup','A hot stew','A rice dish','A fried fish dish']},
+    {q:'"las tapas" are?',a:'Small dishes / snacks',o:['Small dishes / snacks','Desserts','Large main courses','Soups']},
+    {q:'"el jamón serrano" is?',a:'Cured ham',o:['Cured ham','Fried chicken','Grilled fish','Roast pork']},
+    {q:'"la sangría" is?',a:'A red wine punch',o:['A red wine punch','A cold soup','A type of bread','A dessert']},
+    {q:'"el churro" is?',a:'A fried dough pastry',o:['A fried dough pastry','A cake','A biscuit','A bread roll']},
+    {q:'"el cocido madrileño" is a?',a:'A hearty chickpea stew from Madrid',o:['A hearty chickpea stew from Madrid','A cold soup','A rice dish','A seafood dish']},
+    {q:'"la horchata" is made from?',a:'Tiger nuts (chufa)',o:['Tiger nuts (chufa)','Almonds','Milk','Coconut']},
+    {q:'"el flan" is?',a:'A caramel custard dessert',o:['A caramel custard dessert','A type of cake','A biscuit','A cold soup']},
+  ]},
+]},
+
+// ══════════════════════════════════════════════════════
+// MAY — CBA Prep
+// ══════════════════════════════════════════════════════
+{id:'cba_prep',name:'CBA Preparation',icon:'🎤',color:'#1abc9c',month:'May',
+ levels:[
+  {name:'Key Phrases for Speaking',qs:[
+    {q:'How do you say "In my opinion..."?',a:'En mi opinión...',o:['En mi opinión...','Creo que...','Pienso...','A mi modo de ver...']},
+    {q:'How do you say "I think that..."?',a:'Creo que...',o:['Creo que...','En mi opinión...','Me parece que...','Pienso que...']},
+    {q:'How do you say "For example..."?',a:'Por ejemplo...',o:['Por ejemplo...','Sin embargo...','Además...','Por eso...']},
+    {q:'How do you say "Also / Furthermore..."?',a:'Además...',o:['Además...','Sin embargo...','Por ejemplo...','Pero...']},
+    {q:'How do you say "However..."?',a:'Sin embargo...',o:['Sin embargo...','Además...','Por lo tanto...','Por ejemplo...']},
+    {q:'How do you say "Therefore..."?',a:'Por lo tanto...',o:['Por lo tanto...','Sin embargo...','Además...','También...']},
+    {q:'How do you say "I would like to talk about..."?',a:'Me gustaría hablar de...',o:['Me gustaría hablar de...','Quiero hablar de...','Voy a hablar de...','Hablo de...']},
+    {q:'How do you say "To conclude..."?',a:'Para concluir...',o:['Para concluir...','Para empezar...','En resumen...','En conclusión...']},
+    {q:'How do you say "I agree"?',a:'Estoy de acuerdo',o:['Estoy de acuerdo','No estoy de acuerdo','Me parece bien','Claro que sí']},
+    {q:'How do you say "I disagree"?',a:'No estoy de acuerdo',o:['No estoy de acuerdo','Estoy de acuerdo','Me parece bien','Tiene razón']},
+  ]},
+  {name:'Talking About Your Topic',qs:[
+    {q:'How do you say "My topic is..."?',a:'Mi tema es...',o:['Mi tema es...','El tema es...','Hablo del tema...','Mi presentación es...']},
+    {q:'How do you say "I have prepared a presentation about..."?',a:'He preparado una presentación sobre...',o:['He preparado una presentación sobre...','Voy a presentar...','Mi presentación es...','Hablo sobre...']},
+    {q:'How do you say "It is interesting because..."?',a:'Es interesante porque...',o:['Es interesante porque...','Me gusta porque...','Es bueno porque...','Es importante porque...']},
+    {q:'How do you say "I enjoy... because..."?',a:'Me gusta... porque...',o:['Me gusta... porque...','Disfruto... porque...','Me encanta... porque...','Prefiero... porque...']},
+    {q:'How do you say "In the future, I would like to..."?',a:'En el futuro, me gustaría...',o:['En el futuro, me gustaría...','Pronto voy a...','Mañana voy a...','En el futuro, voy a...']},
+    {q:'"¿Puedes repetir eso?" means?',a:'Can you repeat that?',o:['Can you repeat that?','Can you speak more slowly?','I don\'t understand','Can you explain?']},
+    {q:'"¿Puedes hablar más despacio?" means?',a:'Can you speak more slowly?',o:['Can you speak more slowly?','Can you repeat that?','I don\'t understand','Can you explain?']},
+    {q:'How do you say "That is a good question"?',a:'Es una buena pregunta',o:['Es una buena pregunta','No sé la respuesta','La pregunta es difícil','Entiendo la pregunta']},
+    {q:'How do you say "I am not sure, but..."?',a:'No estoy seguro/a, pero...',o:['No estoy seguro/a, pero...','No sé...','No entiendo...','No puedo...']},
+    {q:'How do you say "Thank you for listening"?',a:'Gracias por escuchar',o:['Gracias por escuchar','Gracias por preguntar','Gracias por venir','Gracias por todo']},
+  ]},
+]},
+
+]; // end TOPICS
+
+// ══ COLOURS for tiles ══
+const STRIPES = ['#e74c3c','#e91e8c','#3498db','#9b59b6','#27ae60','#e67e22','#1abc9c','#f1c40f','#e74c3c','#3498db','#27ae60','#9b59b6','#e67e22'];
+
+// ══ TIME PER QUESTION (seconds) ══
+const TIME_PER_Q = 15;
+
+// ══ STATE ══
+let curTopic = null, curLevel = 0, curQs = [], curIdx = 0;
+let correct = 0, wrong = 0, missed = [];
+let timerID = null, timeLeft = 0, startTime = 0, totalSec = 0;
+let answered = false;
+
+// ══ STORAGE ══
+function sk(id,lv){return 'esp2_'+id+'_'+lv;}
+function getBest(id,lv){return parseInt(localStorage.getItem(sk(id,lv))||'0');}
+function setBest(id,lv,s){if(s>getBest(id,lv))localStorage.setItem(sk(id,lv),s);}
+function totalStars(){
+  return TOPICS.reduce((t,tp)=>t+tp.levels.reduce((s,_,i)=>s+getBest(tp.id,i),0),0);
+}
+function maxStars(){
+  return TOPICS.reduce((t,tp)=>t+(tp.levels.length*3),0);
+}
+
+// ══ SCREEN ══
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+// ══ HOME ══
+function renderHome(){
+  const grid = document.getElementById('tile-grid');
+  grid.innerHTML = '';
+  TOPICS.forEach((tp,ti)=>{
+    const totalLevStars = tp.levels.reduce((s,_,i)=>s+getBest(tp.id,i),0);
+    const maxLevStars   = tp.levels.length*3;
+    const done = totalLevStars === maxLevStars && maxLevStars>0;
+    const tile = document.createElement('div');
+    tile.className = 'tile'+(done?' best':'');
+    tile.innerHTML =
+      `<div class="tile-stripe" style="background:${STRIPES[ti%STRIPES.length]}"></div>
+       <span class="tile-icon">${tp.icon}</span>
+       <div class="tile-name">${tp.name}</div>
+       <div class="tile-month">${tp.month}</div>
+       <span class="tile-stars">${starStr(totalLevStars,maxLevStars)}</span>`;
+    tile.addEventListener('click',()=>openTopic(ti));
+    grid.appendChild(tile);
+  });
+  const ts = totalStars(), ms = maxStars();
+  document.getElementById('xp-label').textContent = ts+' / '+ms+' ⭐';
+  document.getElementById('xp-fill').style.width = (ms?Math.round(ts/ms*100):0)+'%';
+}
+
+function starStr(got,max){
+  if(!max) return '';
+  const pct = got/max;
+  if(pct>=1) return '⭐⭐⭐';
+  if(pct>=0.66) return '⭐⭐☆';
+  if(pct>0) return '⭐☆☆';
+  return '☆☆☆';
+}
+
+// ══ LEVELS ══
+function openTopic(ti){
+  curTopic = ti;
+  const tp = TOPICS[ti];
+  document.getElementById('lev-title').textContent = tp.name;
+  document.getElementById('lev-icon').textContent = tp.icon;
+  const list = document.getElementById('lev-list');
+  list.innerHTML = '';
+  tp.levels.forEach((lv,li)=>{
+    const best = getBest(tp.id,li);
+    const row = document.createElement('div');
+    row.className = 'lev-row'+(best===3?' lev-best':'');
+    row.innerHTML =
+      `<div class="lev-num">${li+1}</div>
+       <div class="lev-info">
+         <div class="lev-name">${lv.name}</div>
+         <div class="lev-sub">${lv.qs.length} questions</div>
+       </div>
+       <div class="lev-stars">${'⭐'.repeat(best)+'☆'.repeat(3-best)}</div>`;
+    row.addEventListener('click',()=>startGame(ti,li));
+    list.appendChild(row);
+  });
+  show('levels');
+}
+
+// ══ GAME ══
+function startGame(ti,li){
+  curTopic = ti; curLevel = li;
+  const tp = TOPICS[ti];
+  const lv = tp.levels[li];
+  curQs = shuffle([...lv.qs]);
+  curIdx = 0; correct = 0; wrong = 0; missed = []; totalSec = 0; answered = false;
+  document.getElementById('ghdr-name').textContent = tp.name+' · '+lv.name;
+  document.getElementById('ghdr-score').textContent = '0 / '+curQs.length;
+
+  // dots
+  const dots = document.getElementById('q-dots');
+  dots.innerHTML = '';
+  curQs.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'qdot'+(i===0?' now':'');
+    d.id = 'dot-'+i;
+    dots.appendChild(d);
+  });
+
+  show('game');
+  showQ();
+}
+
+function showQ(){
+  answered = false;
+  const q = curQs[curIdx];
+  document.getElementById('q-label').textContent = 'Question '+(curIdx+1)+' of '+curQs.length;
+  document.getElementById('q-main').textContent = q.q;
+  document.getElementById('fb-bar').className = 'fb-bar';
+  document.getElementById('nxt-btn').className = 'nxt-btn';
+
+  const opts = document.getElementById('opts');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  const wrap = shuffle([...q.o]);
+  wrap.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-ltr">${letters[i]}</span>${escHtml(opt)}`;
+    btn.addEventListener('click',()=>pick(btn, opt, q.a, q.q));
+    opts.appendChild(btn);
+  });
+
+  // Timer
+  clearTimer();
+  timeLeft = TIME_PER_Q;
+  startTime = Date.now();
+  setTimer(100);
+  timerID = setInterval(()=>tickTimer(), 100);
+}
+
+function setTimer(pct){
+  document.getElementById('timer-bar').style.width = pct+'%';
+}
+
+function tickTimer(){
+  const elapsed = (Date.now()-startTime)/1000;
+  const remaining = Math.max(0, TIME_PER_Q - elapsed);
+  setTimer((remaining/TIME_PER_Q)*100);
+  if(remaining<=0 && !answered){
+    clearTimer();
+    timeOut();
+  }
+}
+
+function clearTimer(){
+  if(timerID){clearInterval(timerID);timerID=null;}
+}
+
+function timeOut(){
+  answered = true;
+  const q = curQs[curIdx];
+  wrong++;
+  missed.push({q:q.q,a:q.a});
+  document.querySelectorAll('.opt').forEach(btn=>{
+    const txt = btn.textContent.slice(1).trim();
+    if(txt===q.a) btn.className='opt reveal';
+    else btn.className='opt';
+    btn.disabled=true;
+  });
+  showFb(false,'⏱ Time\'s up! Answer: '+q.a);
+  dotMark(curIdx,'no');
+  totalSec += TIME_PER_Q;
+  document.getElementById('nxt-btn').className='nxt-btn on';
+}
+
+function pick(btn, chosen, correct_a, qText){
+  if(answered) return;
+  answered = true;
+  clearTimer();
+  const elapsed = (Date.now()-startTime)/1000;
+  totalSec += elapsed;
+
+  const isRight = chosen===correct_a;
+  document.querySelectorAll('.opt').forEach(b=>{
+    const txt = b.textContent.slice(1).trim();
+    b.disabled = true;
+    if(txt===correct_a) b.className = 'opt'+(isRight&&b===btn?' correct':' reveal');
+    else if(b===btn && !isRight) b.className='opt wrong';
+  });
+
+  if(isRight){
+    correct++;
+    dotMark(curIdx,'ok');
+    showFb(true, randomRight()+' ¡Correcto! 🎉');
+    burst(btn);
+  } else {
+    wrong++;
+    missed.push({q:qText,a:correct_a});
+    dotMark(curIdx,'no');
+    showFb(false,'❌ La respuesta es: '+correct_a);
+  }
+  document.getElementById('ghdr-score').textContent = correct+' / '+curQs.length;
+  document.getElementById('nxt-btn').className='nxt-btn on';
+}
+
+function showFb(ok,msg){
+  const el = document.getElementById('fb-bar');
+  el.className = 'fb-bar on '+(ok?'fbgood':'fbbad');
+  el.textContent = msg;
+}
+
+function dotMark(i,cls){
+  const d = document.getElementById('dot-'+i);
+  if(d) d.className='qdot '+cls;
+  const next = document.getElementById('dot-'+(i+1));
+  if(next) next.className='qdot now';
+}
+
+function nextQ(){
+  curIdx++;
+  if(curIdx>=curQs.length){endGame();return;}
+  showQ();
+}
+
+function quitGame(){
+  clearTimer();
+  show('levels');
+}
+
+function endGame(){
+  clearTimer();
+  const total = curQs.length;
+  const pct = Math.round(correct/total*100);
+  const avgTime = totalSec/total;
+
+  // Stars: accuracy + speed bonus
+  let stars = 0;
+  if(pct===100 && avgTime<=8)       stars=3;
+  else if(pct>=80 && avgTime<=12)   stars=3;
+  else if(pct>=80)                  stars=2;
+  else if(pct>=50)                  stars=1;
+  else                              stars=0;
+
+  setBest(TOPICS[curTopic].id, curLevel, stars);
+
+  // XP earned
+  const xp = correct*10 + (stars===3?50:stars===2?25:stars===1?10:0);
+
+  // Results screen
+  let emoji, title;
+  if(pct===100){emoji='🏆';title='¡Perfecto!';}
+  else if(pct>=80){emoji='🔥';title='¡Muy bien!';}
+  else if(pct>=60){emoji='👍';title='¡Bien!';}
+  else if(pct>=40){emoji='😅';title='Keep going!';}
+  else{emoji='💪';title='Practise more!';}
+
+  document.getElementById('res-em').textContent=emoji;
+  document.getElementById('res-title').textContent=title;
+  document.getElementById('res-frac').textContent=correct+'/'+total;
+  document.getElementById('res-frac').style.color=pct>=80?'#2ecc71':pct>=50?'#f1c40f':'#e74c3c';
+  document.getElementById('res-time').textContent='Avg time: '+avgTime.toFixed(1)+'s per question';
+  document.getElementById('res-stars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  document.getElementById('res-xp').textContent='+'+xp+' XP earned!';
+
+  if(missed.length){
+    const box=document.getElementById('missed-box');
+    const list=document.getElementById('missed-list');
+    box.style.display='block';
+    list.innerHTML=missed.map(m=>`<div class="missed-row"><div class="missed-q">${escHtml(m.q)}</div><div class="missed-a">✓ ${escHtml(m.a)}</div></div>`).join('');
+  } else {
+    document.getElementById('missed-box').style.display='none';
+  }
+
+  show('results');
+}
+
+function replayGame(){startGame(curTopic,curLevel);}
+
+// ── BURST ANIMATION ──
+function burst(btn){
+  const emojis=['⭐','✨','🌟','💫','🎉'];
+  const rect = btn.getBoundingClientRect();
+  for(let i=0;i<5;i++){
+    const el=document.createElement('div');
+    el.className='floater';
+    el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left=(rect.left+rect.width/2-20+Math.random()*40-20)+'px';
+    el.style.top=(rect.top+rect.height/2)+'px';
+    el.style.animationDelay=(i*0.08)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1000);
+  }
+}
+
+// ── UTILS ──
+const praise=['¡Genial! 🌟','¡Excelente! 🎊','¡Fenomenal! 🔥','¡Olé! 💃','¡Fantástico! 🏆','¡Brillante! ⚡'];
+function randomRight(){return praise[Math.floor(Math.random()*praise.length)];}
+function shuffle(a){return a.sort(()=>Math.random()-0.5);}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── INIT ──
+renderHome();
+</script>
+
+<footer style="text-align:center;padding:16px 20px 28px;font-size:0.68rem;color:rgba(255,255,255,0.2);font-family:'Nunito',sans-serif;">© Synge Street Games · Imagination and Perseverance</footer>
+</body>
+</html>
